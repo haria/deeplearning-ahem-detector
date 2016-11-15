@@ -28,8 +28,8 @@ import os, sys
 import utils as ut
 
 # Load sound files
-path = '/archive/ahem_data/'
-sound_file_paths = [os.path.join(path, "ahem_sounds.wav"),
+path = os.path.join(os.path.dirname(__file__),"data")
+sound_file_paths = [os.path.join(path, "jingle.wav"),
                     os.path.join(path, "podcast_17_sample.wav"),
                    ]
 
@@ -52,7 +52,10 @@ for x in xrange(0, numsamples-windowsize, step):
     b = x               # begin 
     e = b+windowsize    # end 
     ut.printStuff('Creating spectrum image class_1 samples [%d-%d] of %d file %d',(b,e, numsamples, numfiles))
-    filename = os.path.join(path, 'class_1/partial_spectrum_%d.png'%x)
+    folder = os.path.join(path, "class_1")
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    filename = os.path.join(folder, 'partial_spectrum_%d.png'%x)
     ut.specgram_frombuffer(audiosamples[b:e], dimx, dimy, fname=filename, dpi=180)
         
 print('\nbye!\n')        
