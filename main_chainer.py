@@ -106,13 +106,15 @@ class1_files = [f for f in listdir(path_class_1) if isfile(join(path_class_1, f)
 X_t = []
 Y_t = []
 
-for fn in class0_files[:100]:
+#for fn in class0_files[:100]:
+for fn in class0_files:
     imagepath = os.path.join(path_class_0, fn)
     img = load_image(imagepath)
     X_t.append(img)
     Y_t.append(0)
 
-for fn in class1_files[:100]:
+#for fn in class1_files[:100]:
+for fn in class1_files:
     imagepath = os.path.join(path_class_1, fn)
     img = load_image(imagepath)
     X_t.append(img)
@@ -243,9 +245,9 @@ from Train import Train
 # parse argument input from user
 parser = argparse.ArgumentParser(description='Chainer AhemNet')
 parser.add_argument('--outprefix', default='AhemDetector', help='Prefix of path to save model and state after each epoch')
-parser.add_argument('--gpu', default=-1, type=int, help='GPU ID (negative value indicates CPU)')
+parser.add_argument('--gpu', default=0, type=int, help='GPU ID (negative value indicates CPU)')
 parser.add_argument('--epoch', default=20, type=int, help='number of epochs to learn')
-parser.add_argument('--batchsize', type=int, default=2, help='learning minibatch size')
+parser.add_argument('--batchsize', type=int, default=32, help='learning minibatch size')
 parser.add_argument('--numclasses', type=int, default=2, help='input size')
 parser.add_argument('--lr', type=float, default=0.01, help='learning rate')
 args = parser.parse_args()
@@ -269,8 +271,8 @@ if cuda.available:
 ##########################################################
 print("Optimizer Init.")
 print("Learning rate: %f." % args.lr)
-#optimizer = chainer.optimizers.SGD(lr=args.lr)
-optimizer = chainer.optimizers.ada_delta()
+optimizer = chainer.optimizers.SGD(lr=args.lr)
+#optimizer = chainer.optimizers.AdaDelta()
 optimizer.setup(model)
 
 ##########################################################
