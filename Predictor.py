@@ -7,6 +7,7 @@ import os, sys, time
 import requests
 import argparse
 import skimage.io as io
+from skimage.transform import resize
 
 from Classifier import Classifier
 from AhemNet import AhemNet
@@ -14,6 +15,7 @@ from AhemNet import AhemNet
 
 def load_image(filename):
     img = io.imread(filename)
+    img = resize(img, (186, 463))
     img = img.transpose((2, 0, 1))
     img = img[:3, :, :]
     return img
