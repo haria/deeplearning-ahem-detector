@@ -72,6 +72,8 @@ import numpy as np
 from skimage.measure import block_reduce
 import skimage.io as io
 
+from AhemNet import AhemNet
+
 
 def load_image(filename):
     img = io.imread(filename)
@@ -166,43 +168,6 @@ X_test /= 255
 Y_test = np_utils.to_categorical(Y_test, nb_classes)
 """
 
-class AhemNet(chainer.Chain):
-    """
-    AhemNet
-    - It takes (64, 64, 1) sized image as imput
-    """
-
-    def __init__(self, num_classes=2):
-        super(AhemNet, self).__init__(
-            conv1=L.Convolution2D(None, nb_filters, ksize=3, stride=1),
-            conv2=L.Convolution2D(None, nb_filters, ksize=3, stride=1),
-
-            conv3=L.Convolution2D(None, nb_filters, ksize=3, stride=1, pad=1),
-            conv4=L.Convolution2D(None, nb_filters, ksize=3, stride=1),
-
-            fc5=L.Linear(None, 128),
-            fc6=L.Linear(128, num_classes)
-        )
-
-    def __call__(self, x, train=True):
-        h = F.relu(self.conv1(x))
-        h = F.relu(self.conv2(h))
-        h = F.max_pooling_2d(h, ksize=2, stride=2)
-        h = F.dropout(h, train=train, ratio=0.25)
-
-        h = F.relu(self.conv3(x))
-        h = F.relu(self.conv4(h))
-        h = F.max_pooling_2d(h, ksize=2, stride=2)
-        h = F.dropout(h, train=train, ratio=0.25)
-
-        #h = F.flatten(h)
-
-        h = F.relu(self.fc5(h))
-        h = F.dropout(h, train=train, ratio=0.5)
-
-        h = self.fc6(h)
-        return h
-
 """
 def make_model():
     model = Sequential()
@@ -247,7 +212,7 @@ parser = argparse.ArgumentParser(description='Chainer AhemNet')
 parser.add_argument('--outprefix', default='AhemDetector', help='Prefix of path to save model and state after each epoch')
 parser.add_argument('--gpu', default=0, type=int, help='GPU ID (negative value indicates CPU)')
 parser.add_argument('--epoch', default=20, type=int, help='number of epochs to learn')
-parser.add_argument('--batchsize', type=int, default=32, help='learning minibatch size')
+parser.add_argument('--batchsize', type=int, default=4, help='learning minibatch size')
 parser.add_argument('--numclasses', type=int, default=2, help='input size')
 parser.add_argument('--lr', type=float, default=0.01, help='learning rate')
 args = parser.parse_args()
