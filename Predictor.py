@@ -24,9 +24,6 @@ def load_image(filename):
 class Predictor:
     def __init__(self, model, model_path, xp = np):
         self.model = model
-        if cuda.available:
-            print ("load model to GPU")
-            self.model.to_gpu()
         print ("Predictor model from: %s loading."%model_path)
         chainer.serializers.load_npz(model_path, self.model)
         self.xp = xp
@@ -66,6 +63,9 @@ if __name__=="__main__":
         xp = np
 
     model = Classifier(AhemNet(num_classes=args.numclasses))
+    if cuda.available and args.gpu >=0 :
+        print ("load model to GPU")
+        model.to_gpu()
         
     predictor = Predictor(model, args.model, xp)
     if os.path.exists(args.image) and os.path.isfile(args.image):

@@ -212,7 +212,7 @@ parser = argparse.ArgumentParser(description='Chainer AhemNet')
 parser.add_argument('--outprefix', default='AhemDetector', help='Prefix of path to save model and state after each epoch')
 parser.add_argument('--gpu', default=0, type=int, help='GPU ID (negative value indicates CPU)')
 parser.add_argument('--epoch', default=20, type=int, help='number of epochs to learn')
-parser.add_argument('--batchsize', type=int, default=4, help='learning minibatch size')
+parser.add_argument('--batchsize', type=int, default=32, help='learning minibatch size')
 parser.add_argument('--numclasses', type=int, default=2, help='input size')
 parser.add_argument('--lr', type=float, default=0.01, help='learning rate')
 args = parser.parse_args()
@@ -230,7 +230,7 @@ else:
 ##########################################################
 model = Classifier(AhemNet(num_classes=args.numclasses))
 
-if cuda.available:
+if cuda.available and args.gpu >= 0:
     model.to_gpu()
 
 ##########################################################
